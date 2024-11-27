@@ -28,7 +28,7 @@ GLfloat fi = 0;
 
 
 //-------------Atrybuty wierzcholkow------------------------------------------
-
+/*
 	GLfloat ver_rectangle[] = {	//wspolrzedne wierzcholkow prostokata
 		-1.0f, -0.5f, 0.5f, //0
 		 1.0f, -0.5f, 0.5f, //1
@@ -66,7 +66,40 @@ GLfloat fi = 0;
     3, 4, 7
 	};
 	
+*/
 
+  GLfloat ver_cone[] ={
+    0.0f, 2.0f, 0.0f,
+    -0.5f, 0.0f, 0.0f,
+    -0.4f, 0.0f, -0.4f,
+    0.0f, 0.0f, -0.5f,
+    0.4f, 0.0f, -0.4f,
+    0.5f, 0.0f, 0.0f,
+    0.4f, 0.0f, 0.4f,
+    0.0f, 0.0f, 0.5f,
+    -0.4f, 0.0f, 0.4f
+  };
+
+  GLfloat col_cone[] = {
+		1.0f, 1.0f, 1.0f,
+		0.0f, 0.2f, 0.0f,
+		0.0f, 0.4f, 0.0f,
+		0.0f, 0.2f, 0.0f,
+    0.0f, 0.4f, 0.0f,
+    0.0f, 0.2f, 0.0f,
+    0.0f, 0.4f, 0.0f,
+    0.0f, 0.2f, 0.0f
+	};
+
+  GLuint elements[] = { 
+		0, 1, 2,		 
+		0, 2, 3,	  
+    0, 3, 4,
+    0, 4, 5,
+    0, 5, 6,
+    0, 6, 7,
+    0, 7, 8
+	};
 //----------------------------kod shadera wierzcholkow-----------------------------------------
 
 const GLchar* vShader_string =
@@ -173,7 +206,7 @@ int initGL(void)
         glEnableVertexAttribArray(colAttrib);
 	
 	glBindVertexArray(vao[0]);
-
+  /*
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(ver_rectangle), ver_rectangle, GL_STATIC_DRAW);
 	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -181,6 +214,17 @@ int initGL(void)
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(col_rectangle), col_rectangle, GL_STATIC_DRAW);
+	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(colAttrib);
+
+  */
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ver_cone), ver_cone, GL_STATIC_DRAW);
+	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(posAttrib);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(col_cone), col_cone, GL_STATIC_DRAW);
 	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(colAttrib);
 
@@ -216,7 +260,8 @@ int drawGLScene(int counter)
     
 
     glBindVertexArray(vao[0]);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); //rysowanie prostokata
+    //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); //rysowanie prostokata
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 10);
 
     fi += 0.5;
  
