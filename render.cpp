@@ -69,15 +69,16 @@ GLfloat fi = 0;
 */
 
   GLfloat ver_cone[] ={
-    0.0f, 2.0f, 0.0f,
-    -0.5f, 0.0f, 0.0f,
-    -0.4f, 0.0f, -0.4f,
-    0.0f, 0.0f, -0.5f,
-    0.4f, 0.0f, -0.4f,
-    0.5f, 0.0f, 0.0f,
-    0.4f, 0.0f, 0.4f,
-    0.0f, 0.0f, 0.5f,
-    -0.4f, 0.0f, 0.4f
+    0.0f, 0.5f, 0.0f,
+    -0.5f, -1.5f, 0.0f,
+    -0.4f,  -1.5f, -0.4f,
+    0.0f,  -1.5f, -0.5f,
+    0.4f,  -1.5f, -0.4f,
+    0.5f,  -1.5f, 0.0f,
+    0.4f,  -1.5f, 0.4f,
+    0.0f,  -1.5f, 0.5f,
+    -0.4f,  -1.5f, 0.4f,
+     -0.5f, -1.5f, 0.0f
   };
 
   GLfloat col_cone[] = {
@@ -85,6 +86,8 @@ GLfloat fi = 0;
 		0.0f, 0.2f, 0.0f,
 		0.0f, 0.4f, 0.0f,
 		0.0f, 0.2f, 0.0f,
+    0.0f, 0.4f, 0.0f,
+    0.0f, 0.2f, 0.0f,
     0.0f, 0.4f, 0.0f,
     0.0f, 0.2f, 0.0f,
     0.0f, 0.4f, 0.0f,
@@ -98,7 +101,8 @@ GLfloat fi = 0;
     0, 4, 5,
     0, 5, 6,
     0, 6, 7,
-    0, 7, 8
+    0, 7, 8,
+    0, 8, 9
 	};
 //----------------------------kod shadera wierzcholkow-----------------------------------------
 
@@ -248,7 +252,12 @@ int drawGLScene(int counter)
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+    float scale = 1.0f;                   // skala stozka
+    float heightOffset = 0.0f;            // offset stackowania
+    int numCones = 7;                     // liczba stozkow
     
+    /*
     glm::mat4 translationMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f));  		//macierz przesuniecia o zadany wektor
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(), glm::radians(fi), glm::vec3(0.0f, 1.0f, 0.0f)); //macierz obrotu o dany kat wokol wektora
 		
@@ -262,6 +271,35 @@ int drawGLScene(int counter)
     glBindVertexArray(vao[0]);
     //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); //rysowanie prostokata
     glDrawArrays(GL_TRIANGLE_FAN, 0, 10);
+
+    */
+
+   for (int i = 0; i < numCones; ++i) {
+
+        //rotacja co drugi stozek
+        float rotationAngle = (i % 2 == 0) ? glm::radians(fi) : -glm::radians(fi);
+        // stozki w gore
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, heightOffset, 0.0f));
+
+        // rotacja
+        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(), rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+
+        // skalowanie stozkow
+        glm::mat4 scalingMatrix = glm::scale(glm::mat4(), glm::vec3(scale, scale, scale));
+
+        // kombinacja transformacji
+        glm::mat4 transformMatrix = projectionMatrix * viewMatrix * translationMatrix * rotationMatrix * scalingMatrix;
+
+        GLint transformMatrixUniformLocation = glGetUniformLocation(shaderProgram, "transformMatrix");
+        glUniformMatrix4fv(transformMatrixUniformLocation, 1, GL_FALSE, glm::value_ptr(transformMatrix));
+
+        glBindVertexArray(vao[0]);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 10);
+
+        // skala i offset dla nastepnego
+        scale *= 0.8f;        
+        heightOffset += 0.3f;
+    }
 
     fi += 0.5;
  
